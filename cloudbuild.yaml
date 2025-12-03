@@ -1,16 +1,21 @@
 steps:
+  # 1. Build Image Frontend (Client)
   - name: 'gcr.io/cloud-builders/docker'
     args: ['build', '-t', 'asia-southeast2-docker.pkg.dev/$PROJECT_ID/todo-repo/client-img', './client']
 
+  # 2. Build Image Backend (Server)
   - name: 'gcr.io/cloud-builders/docker'
     args: ['build', '-t', 'asia-southeast2-docker.pkg.dev/$PROJECT_ID/todo-repo/server-img', './server']
 
+  # 3. Push Image Frontend ke Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push', 'asia-southeast2-docker.pkg.dev/$PROJECT_ID/todo-repo/client-img']
 
+  # 4. Push Image Backend ke Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
     args: ['push', 'asia-southeast2-docker.pkg.dev/$PROJECT_ID/todo-repo/server-img']
 
+  # 5. Deploy Backend ke Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
     args:
@@ -27,8 +32,9 @@ steps:
       - '--port'
       - '5000'
       - '--set-env-vars'
-      - 'DB_User=root,DB_NAME=todo_db'
+      - 'DB_USER=root,DB_NAME=todo_db' # Password & Host nanti kita set manual
 
+  # 6. Deploy Frontend ke Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
     args:
@@ -48,3 +54,7 @@ steps:
 images:
   - 'asia-southeast2-docker.pkg.dev/$PROJECT_ID/todo-repo/client-img'
   - 'asia-southeast2-docker.pkg.dev/$PROJECT_ID/todo-repo/server-img'
+
+# --- TAMBAHKAN BAGIAN INI DI PALING BAWAH ---
+options:
+  logging: CLOUD_LOGGING_ONLY
