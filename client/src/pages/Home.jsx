@@ -9,7 +9,7 @@ import Hello from "./Hello";
 // !!! PERBAIKAN UTAMA: DIBUAT VARIABEL BARU !!!
 // ----------------------------------------------------
 // Membaca Env Var VITE_API_URL dari Cloud Run, fallback ke localhost untuk dev lokal.
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+const API_BASE_URL = "https://todo-backend-636501043898.asia-southeast2.run.app";
 // ----------------------------------------------------
 
 
