@@ -5,6 +5,15 @@ import { PiCheckBold } from "react-icons/pi";
 import { motion } from "motion/react";
 import Hello from "./Hello";
 
+// ----------------------------------------------------
+// !!! BAGIAN YANG DIGANTI HANYA DI SINI !!!
+// ----------------------------------------------------
+// Baca Environment Variable VITE_API_URL (dari Cloud Run).
+// Jika tidak ada (misal: di lokal), fallback ke localhost:5000.
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+// ----------------------------------------------------
+
+
 function Home() {
     const [todos, setTodos] = useState([]);
     const [newTodo, setNewTodo] = useState("");
@@ -14,25 +23,29 @@ function Home() {
 
     const fetchTodos = async () => {
         setLoading(true);
-        const res = await axios.get("http://localhost:5000/todos");
+        // MENGGANTI: "http://localhost:5000/todos"
+        const res = await axios.get(`${API_BASE_URL}/todos`);
         setTodos(res.data);
         setLoading(false);
     };
 
     const addTodo = async () => {
         if (!newTodo) return;
-        await axios.post("http://localhost:5000/todos", { title: newTodo });
+        // MENGGANTI: "http://localhost:5000/todos"
+        await axios.post(`${API_BASE_URL}/todos`, { title: newTodo });
         setNewTodo("");
         fetchTodos();
     };
 
     const toggleTodo = async (id, completed) => {
-        await axios.put(`http://localhost:5000/todos/${id}`, { completed: !completed });
+        // MENGGANTI: `http://localhost:5000/todos/${id}`
+        await axios.put(`${API_BASE_URL}/todos/${id}`, { completed: !completed });
         fetchTodos();
     };
 
     const deleteTodo = async (id) => {
-        await axios.delete(`http://localhost:5000/todos/${id}`);
+        // MENGGANTI: `http://localhost:5000/todos/${id}`
+        await axios.delete(`${API_BASE_URL}/todos/${id}`);
         fetchTodos();
     };
 
