@@ -1,0 +1,50 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'asia-southeast2-docker.pkg.dev/$PROJECT_ID/todo-repo/client-img', './client']
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'asia-southeast2-docker.pkg.dev/$PROJECT_ID/todo-repo/server-img', './server']
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'asia-southeast2-docker.pkg.dev/$PROJECT_ID/todo-repo/client-img']
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'asia-southeast2-docker.pkg.dev/$PROJECT_ID/todo-repo/server-img']
+
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'todo-backend'
+      - '--image'
+      - 'asia-southeast2-docker.pkg.dev/$PROJECT_ID/todo-repo/server-img'
+      - '--region'
+      - 'asia-southeast2'
+      - '--platform'
+      - 'managed'
+      - '--allow-unauthenticated'
+      - '--port'
+      - '5000'
+      - '--set-env-vars'
+      - 'DB_User=root,DB_NAME=todo_db'
+
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'todo-frontend'
+      - '--image'
+      - 'asia-southeast2-docker.pkg.dev/$PROJECT_ID/todo-repo/client-img'
+      - '--region'
+      - 'asia-southeast2'
+      - '--platform'
+      - 'managed'
+      - '--allow-unauthenticated'
+      - '--port'
+      - '80'
+
+images:
+  - 'asia-southeast2-docker.pkg.dev/$PROJECT_ID/todo-repo/client-img'
+  - 'asia-southeast2-docker.pkg.dev/$PROJECT_ID/todo-repo/server-img'
