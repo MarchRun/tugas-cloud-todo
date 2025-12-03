@@ -6,10 +6,9 @@ import { motion } from "motion/react";
 import Hello from "./Hello";
 
 // ----------------------------------------------------
-// !!! BAGIAN YANG DIGANTI HANYA DI SINI !!!
+// !!! PERBAIKAN UTAMA: DIBUAT VARIABEL BARU !!!
 // ----------------------------------------------------
-// Baca Environment Variable VITE_API_URL (dari Cloud Run).
-// Jika tidak ada (misal: di lokal), fallback ke localhost:5000.
+// Membaca Env Var VITE_API_URL dari Cloud Run, fallback ke localhost untuk dev lokal.
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 // ----------------------------------------------------
 
@@ -23,7 +22,7 @@ function Home() {
 
     const fetchTodos = async () => {
         setLoading(true);
-        // MENGGANTI: "http://localhost:5000/todos"
+        // MENGGUNAKAN VARIABEL: API_BASE_URL
         const res = await axios.get(`${API_BASE_URL}/todos`);
         setTodos(res.data);
         setLoading(false);
@@ -31,20 +30,20 @@ function Home() {
 
     const addTodo = async () => {
         if (!newTodo) return;
-        // MENGGANTI: "http://localhost:5000/todos"
+        // MENGGUNAKAN VARIABEL: API_BASE_URL
         await axios.post(`${API_BASE_URL}/todos`, { title: newTodo });
         setNewTodo("");
         fetchTodos();
     };
 
     const toggleTodo = async (id, completed) => {
-        // MENGGANTI: `http://localhost:5000/todos/${id}`
+        // MENGGUNAKAN VARIABEL: API_BASE_URL
         await axios.put(`${API_BASE_URL}/todos/${id}`, { completed: !completed });
         fetchTodos();
     };
 
     const deleteTodo = async (id) => {
-        // MENGGANTI: `http://localhost:5000/todos/${id}`
+        // MENGGUNAKAN VARIABEL: API_BASE_URL
         await axios.delete(`${API_BASE_URL}/todos/${id}`);
         fetchTodos();
     };
